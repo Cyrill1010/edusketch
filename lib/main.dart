@@ -25,6 +25,7 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
+  String _selectedViewText = 'Tracking';
   final List<Widget> _views = <Widget>[
     TrackingView(),
     ScheduleView(),
@@ -56,12 +57,30 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _selectedViewText = bottomNavItemsText[index];
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(_selectedViewText,
+            style: Theme.of(context).textTheme.headline4),
+        centerTitle: true,
+        bottom: TabBar(
+          tabs: <Widget>[
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Password',
+              ),
+            )
+          ],
+        ),
+        elevation: 1.0,
+      ),
       body: _views[_selectedIndex],
       bottomNavigationBar: BottomAppBar(
           child: BottomNavigationBar(
