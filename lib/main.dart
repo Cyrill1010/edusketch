@@ -68,17 +68,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         title: Text(_selectedViewText,
             style: Theme.of(context).textTheme.headline4),
         centerTitle: true,
-        bottom: TabBar(
-          tabs: <Widget>[
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              ),
-            )
-          ],
-        ),
         elevation: 1.0,
       ),
       body: _views[_selectedIndex],
