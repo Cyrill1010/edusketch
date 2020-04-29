@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class TrackingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[filterBar, overallOverview, detailedOverview],
+    return Container(
+      child: Column(
+        children: <Widget>[
+          filterBar,
+          ListView(
+            children: <Widget>[overallOverview, DetailedOverview()],
+          )
+        ],
+      ),
     );
   }
 
@@ -21,20 +29,6 @@ class TrackingView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[Text('Overall Overview')],
       ),
-      Table(
-        children: <TableRow>[TableRow()],
-      )
-    ],
-  ));
-
-  final Widget detailedOverview = Container(
-      child: Column(
-    children: <Widget>[
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[],
-      ),
-      Table()
     ],
   ));
 }
@@ -63,6 +57,50 @@ class _TextFieldSemesterState extends State<TextFieldSemester> {
         inputFormatters: [WhitelistingTextInputFormatter(RegExp("[1-9-.]"))],
         keyboardType: TextInputType.number,
       ),
+    );
+  }
+}
+
+class DetailedOverview extends StatefulWidget {
+  @override
+  _DetailedOverviewState createState() => _DetailedOverviewState();
+}
+
+class _DetailedOverviewState extends State<DetailedOverview> {
+  List<String> items = <String>['Chemistry', 'Physics', 'Frence'];
+
+  _updateItems(int oldIndex, int newIndex) {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 500,
+      width: 500,
+      child: ReorderableListView(
+          header: Text('Detailed Overview',
+              style: Theme.of(context).textTheme.subtitle1),
+          onReorder: (int oldIndex, int newIndex) {
+            setState(_updateItems(oldIndex, newIndex));
+          },
+          scrollDirection: Axis.vertical,
+          children: items
+              .map((item) => ExpansionTile(
+                    key: ValueKey(item),
+                    backgroundColor: Colors.grey[200],
+                    leading: FaIcon(
+                      FontAwesomeIcons.flask,
+                      size: 20,
+                    ),
+                    title: Text('Chemistry'),
+                    trailing: IgnorePointer(),
+                    children: <Widget>[
+                      ListTile(title: Text('Title of the item')),
+                      ListTile(
+                        title: Text('Title of the item2'),
+                      )
+                    ],
+                  ))
+              .toList()),
     );
   }
 }

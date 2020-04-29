@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 import './views/tracking.dart';
 import './views/schedule.dart';
 import './views/links.dart';
@@ -24,6 +25,18 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  bool keyboardOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        setState(() => keyboardOpen = visible);
+      },
+    );
+  }
+
   int _selectedIndex = 0;
   String _selectedViewText = 'Tracking';
   final List<Widget> _views = <Widget>[
@@ -85,12 +98,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           notchMargin: 6,
           clipBehavior: Clip.antiAlias,
           shape: CircularNotchedRectangle()),
-      floatingActionButton: FloatingActionButton(
-        onPressed: null,
-        elevation: 2.0,
-        child: Icon(Icons.add),
-        focusElevation: 4.0,
-      ),
+      floatingActionButton: keyboardOpen
+          ? SizedBox()
+          : FloatingActionButton(
+              onPressed: null,
+              elevation: 2.0,
+              child: Icon(Icons.add),
+              focusElevation: 4.0,
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
