@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   keyboard_visibility: any
   font_awesome_flutter: any
+  cloud_firestore: ^0.13.0+1
 
 dev_dependencies:
   flutter_test:

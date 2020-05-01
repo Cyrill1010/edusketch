@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "739141281902",
+    "firebase_url": "https://edusketch-427b1.firebaseio.com",
+    "project_id": "edusketch-427b1",
+    "storage_bucket": "edusketch-427b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:739141281902:android:dd35aad438ac1a8aa39e7f",
+        "android_client_info": {
+          "package_name": "com.example.edusketch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "739141281902-2klqmms1h0defn95aqc8c2ll6shq18f7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCT6bZJEL_kuWnQ5uC3ArnMxdNhqXhao8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "739141281902-2klqmms1h0defn95aqc8c2ll6shq18f7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

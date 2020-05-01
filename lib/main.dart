@@ -1,18 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import './views/tracking.dart';
 import './views/schedule.dart';
 import './views/links.dart';
 import './views/settings.dart';
 
-final darkTheme =
-    ThemeData(brightness: Brightness.dark, primaryColor: Colors.blueGrey);
+// final darkTheme =                dont needed can use lightTheme.dark() see hive flutter dark mode switch
+//     ThemeData(brightness: Brightness.dark, primaryColor: Colors.blueGrey);
 final lightTheme =
     ThemeData(brightness: Brightness.light, primaryColor: Colors.blueGrey);
 final TextStyle optionStyle =
     TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
-void main() {
+// Grade:
+// grade: 5,
+//         topic: `Dog`,
+//         type: `normal`,
+//         gradeWeight: 1,
+//         notes: ``,
+//         remember: ``,
+//         semester: 4.2,
+//         date: ``,
+
+class Subject {
+  String name;
+  double goal;
+  String weight;
+  List grades;
+  double average;
+  String notes;
+  String rememeber;
+  String background;
+  String icon;
+
+  Subject(this.name, this.goal, this.weight, this.grades, this.average,
+      this.notes, this.rememeber, this.background, this.icon);
+}
+
+void main() async {
   runApp(MaterialApp(
       title: 'Edusketch', theme: lightTheme, home: MyStatefulWidget()));
 }
@@ -83,7 +109,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         centerTitle: true,
         elevation: 1.0,
       ),
-      body: _views[_selectedIndex],
+      body: StreamBuilder(
+          stream: Firestore.instance.collection('Users').snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return const Text('Loading...');
+            return _views[_selectedIndex];
+          }),
       bottomNavigationBar: BottomAppBar(
           child: BottomNavigationBar(
             items: List<BottomNavigationBarItem>.generate(
