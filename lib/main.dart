@@ -39,19 +39,29 @@ class Subject {
 }
 
 void main() async {
-  runApp(MaterialApp(
-      title: 'Edusketch', theme: lightTheme, home: MyStatefulWidget()));
+  runApp(
+      MaterialApp(title: 'Edusketch', theme: lightTheme, home: PageLayout()));
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  MyStatefulWidget({Key key}) : super(key: key);
+class PageLayout extends StatefulWidget {
+  PageLayout({Key key}) : super(key: key);
 
   @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+  _PageLayoutState createState() => _PageLayoutState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class _PageLayoutState extends State<PageLayout> {
   bool keyboardOpen = false;
+
+  final _pageViewController = PageController();
+
+  int _activePage = 0;
+
+  @override
+  void dispose() {
+    _pageViewController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -63,14 +73,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 
-  int _selectedIndex = 0;
+  static final db = Firestore.instance;
   String _selectedViewText = 'Tracking';
-  final List<Widget> _views = <Widget>[
-    TrackingView(),
-    ScheduleView(),
-    LinksView(),
-    SettingsView()
-  ];
 
   final List<String> bottomNavItemsText = <String>[
     'Tracking',
@@ -93,13 +97,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      _selectedViewText = bottomNavItemsText[index];
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,21 +106,35 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         centerTitle: true,
         elevation: 1.0,
       ),
-      body: StreamBuilder(
-          stream: Firestore.instance.collection('Users').snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return const Text('Loading...');
-            return _views[_selectedIndex];
-          }),
+      body: PageView(
+        controller: _pageViewController,
+        children: <Widget>[
+          TrackingView(db),
+          ScheduleView(),
+          LinksView(),
+          SettingsView()
+        ],
+        onPageChanged: (index) {
+          setState(() {
+            _activePage = index;
+          });
+        },
+      ),
       bottomNavigationBar: BottomAppBar(
           child: BottomNavigationBar(
             items: List<BottomNavigationBarItem>.generate(
                 4, (int i) => _createBottomNavItem(i)),
-            currentIndex: _selectedIndex,
+            currentIndex: _activePage,
             unselectedItemColor: Colors.black,
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Colors.amber[800],
-            onTap: _onItemTapped,
+            onTap: (index) {
+              _pageViewController.animateToPage(index,
+                  duration: Duration(milliseconds: 200),
+                  curve: Curves.bounceOut);
+              _activePage = index;
+              _selectedViewText = bottomNavItemsText[index];
+            },
             backgroundColor: Colors.grey[300],
           ),
           notchMargin: 6,
