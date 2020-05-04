@@ -5,13 +5,7 @@ import './views/tracking.dart';
 import './views/schedule.dart';
 import './views/links.dart';
 import './views/settings.dart';
-
-// final darkTheme =                dont needed can use lightTheme.dark() see hive flutter dark mode switch
-//     ThemeData(brightness: Brightness.dark, primaryColor: Colors.blueGrey);
-final lightTheme =
-    ThemeData(brightness: Brightness.light, primaryColor: Colors.blueGrey);
-final TextStyle optionStyle =
-    TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+import './theme.dart';
 
 // Grade:
 // grade: 5,
@@ -39,8 +33,7 @@ class Subject {
 }
 
 void main() async {
-  runApp(
-      MaterialApp(title: 'Edusketch', theme: lightTheme, home: PageLayout()));
+  runApp(MaterialApp(title: 'Edusketch', theme: theme, home: PageLayout()));
 }
 
 class PageLayout extends StatefulWidget {

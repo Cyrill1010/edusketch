@@ -2,11 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-dynamic db;
-
-class TrackingView extends StatelessWidget {
+class TrackingView extends StatefulWidget {
   final db;
   TrackingView(this.db);
+
+  @override
+  _TrackingViewState createState() => _TrackingViewState();
+}
+
+class _TrackingViewState extends State<TrackingView> {
+  Color subjectBackground(index) => Colors.yellow[index];
+  isDarkBackground(i) {
+    return i > 400;
+  }
+
+  num subjectBackgroundGrade = 100;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +28,10 @@ class TrackingView extends StatelessWidget {
             children: <Widget>[
               overallOverview,
               StreamBuilder(
-                stream: db.collection('Subjects').orderBy('order').snapshots(),
+                stream: widget.db
+                    .collection('Subjects')
+                    .orderBy('order')
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Container(
@@ -26,17 +39,17 @@ class TrackingView extends StatelessWidget {
                       color: Colors.lightBlue,
                       child: ReorderableListView(
                           header: Text('Detailed Overview',
-                              style: Theme.of(context).textTheme.subtitle1),
+                              style: Theme.of(context).textTheme.headline5),
                           onReorder: (int oldIndex, int newIndex) {
                             if (newIndex < oldIndex) {
                               for (var i = newIndex; i < oldIndex; i++) {
-                                db.runTransaction((myTransaction) async {
+                                widget.db.runTransaction((myTransaction) async {
                                   final doc = snapshot.data.documents[i];
                                   await myTransaction
                                       .update(doc.reference, {'order': i + 1});
                                 });
                               }
-                              db.runTransaction((myTransaction) async {
+                              widget.db.runTransaction((myTransaction) async {
                                 final doc = snapshot.data.documents[oldIndex];
                                 await myTransaction
                                     .update(doc.reference, {'order': newIndex});
@@ -44,13 +57,13 @@ class TrackingView extends StatelessWidget {
                             }
                             if (newIndex > oldIndex) {
                               for (var i = oldIndex; i < newIndex; i++) {
-                                db.runTransaction((myTransaction) async {
+                                widget.db.runTransaction((myTransaction) async {
                                   final doc = snapshot.data.documents[i];
                                   await myTransaction
                                       .update(doc.reference, {'order': i - 1});
                                 });
                               }
-                              db.runTransaction((myTransaction) async {
+                              widget.db.runTransaction((myTransaction) async {
                                 final doc = snapshot.data.documents[oldIndex];
                                 await myTransaction
                                     .update(doc.reference, {'order': newIndex});
@@ -60,62 +73,99 @@ class TrackingView extends StatelessWidget {
                           scrollDirection: Axis.vertical,
                           children: List.generate(
                               snapshot.data.documents.length,
-                              (index) => ExpansionTile(
+                              (index) => Container(
+                                    color: subjectBackground(
+                                        subjectBackgroundGrade),
                                     key: Key('$index'),
-                                    backgroundColor: Colors.grey[100],
-                                    leading: FaIcon(
-                                      FontAwesomeIcons.flask,
-                                      size: 25,
-                                    ),
-                                    title: Align(
-                                      alignment: Alignment(-1.2, 0),
-                                      child: Text(snapshot
-                                          .data.documents[index].data['title']),
-                                    ),
-                                    trailing: Container(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 140, minWidth: 100),
-                                        child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                    child: ExpansionTile(
+                                      backgroundColor: Colors.grey[100],
+                                      leading: FaIcon(
+                                        FontAwesomeIcons.flask,
+                                        size: 30,
+                                      ),
+                                      title: Align(
+                                        alignment: Alignment(-1.2, 0),
+                                        child: Text(snapshot.data
+                                            .documents[index].data['title']),
+                                      ),
+                                      trailing: LayoutBuilder(
+                                        builder: (BuildContext context,
+                                                BoxConstraints constraints) =>
+                                            Container(
+                                          constraints: BoxConstraints(
+                                            maxWidth: 60,
+                                          ),
+                                          child: Stack(
                                             children: <Widget>[
-                                              Text(snapshot.data
-                                                  .documents[index].data['goal']
-                                                  .toString()),
-                                              Text(snapshot
-                                                      .data
-                                                      .documents[index]
-                                                      .data['weight']
-                                                      .toString() +
-                                                  '%'),
-                                              RichText(
-                                                  text: TextSpan(
-                                                children: [
-                                                  WidgetSpan(
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 2.0),
-                                                      child: FaIcon(
-                                                        FontAwesomeIcons.check,
-                                                        size: 20,
+                                              Container(
+                                                constraints: BoxConstraints(
+                                                    minHeight: constraints
+                                                        .constrainHeight()),
+                                                child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      Container(
+                                                        alignment: Alignment
+                                                            .centerRight,
+                                                        child: FaIcon(
+                                                          FontAwesomeIcons
+                                                              .check,
+                                                          size: 20,
+                                                          color:
+                                                              Colors.green[600],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  TextSpan(
-                                                      text: snapshot
+                                                      Container(
+                                                        alignment: Alignment
+                                                            .centerRight,
+                                                        child: Text(
+                                                          snapshot
                                                               .data
                                                               .documents[index]
                                                               .data['average']
-                                                              .toString() +
-                                                          '%'),
-                                                ],
-                                              ))
-                                            ])),
-                                    children: <Widget>[
-                                      ListTile(
-                                          title: Text('Title of the item')),
-                                    ],
+                                                              .toString(),
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .subtitle1,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                              ),
+                                              Positioned(
+                                                bottom: 7,
+                                                right: 0,
+                                                child: Text(
+                                                  'Weight:' +
+                                                      snapshot
+                                                          .data
+                                                          .documents[index]
+                                                          .data['weight']
+                                                          .toString() +
+                                                      '%',
+                                                  style: isDarkBackground(
+                                                          subjectBackgroundGrade)
+                                                      ? Theme.of(context)
+                                                          .textTheme
+                                                          .subtitle2
+                                                      : Theme.of(context)
+                                                          .textTheme
+                                                          .subtitle2,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      children: <Widget>[
+                                        ListTile(
+                                            title: Text('Title of the item')),
+                                      ],
+                                    ),
                                   ))),
                     );
                   } else {
