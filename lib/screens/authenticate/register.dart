@@ -25,6 +25,7 @@ class _RegisterState extends State<Register> {
     return loading
         ? CircularProgressIndicator()
         : Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.brown[100],
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(250.0),

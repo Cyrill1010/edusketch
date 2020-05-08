@@ -14,11 +14,9 @@ class Subject {
   String weight;
   List grades;
   double average;
-  String notes;
-  String rememeber;
   String background;
   String icon;
 
   Subject(this.name, this.goal, this.weight, this.grades, this.average,
-      this.notes, this.rememeber, this.background, this.icon);
+      this.background, this.icon);
 }

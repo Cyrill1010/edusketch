@@ -63,6 +63,7 @@ class _ViewsState extends State<Views> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(_selectedViewText,
             style: Theme.of(context).textTheme.headline4),

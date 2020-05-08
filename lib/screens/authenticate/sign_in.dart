@@ -25,6 +25,7 @@ class _SignInState extends State<SignIn> {
     return loading
         ? CircularProgressIndicator()
         : Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.brown[100],
             appBar: AppBar(
               backgroundColor: Colors.brown[400],
