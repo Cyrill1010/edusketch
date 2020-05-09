@@ -4,7 +4,6 @@ import 'package:edusketch/screens/authenticated/views/schedule.dart';
 import 'package:edusketch/screens/authenticated/views/settings.dart';
 import 'package:edusketch/screens/authenticated/views/tracking.dart';
 import 'package:flutter/material.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 class Views extends StatefulWidget {
   Views({Key key}) : super(key: key);
@@ -26,15 +25,15 @@ class _ViewsState extends State<Views> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    KeyboardVisibilityNotification().addNewListener(
-      onChange: (bool visible) {
-        setState(() => keyboardOpen = visible);
-      },
-    );
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   KeyboardVisibilityNotification().addNewListener(
+  //     onChange: (bool visible) {
+  //       setState(() => keyboardOpen = visible);
+  //     },
+  //   );
+  // }
 
   static final db = Firestore.instance;
   String _selectedViewText = 'Tracking';
@@ -70,48 +69,48 @@ class _ViewsState extends State<Views> {
         centerTitle: true,
         elevation: 1.0,
       ),
-      body: PageView(
-        controller: _pageViewController,
-        children: <Widget>[
-          TrackingView(db),
-          ScheduleView(),
-          LinksView(),
-          SettingsView()
-        ],
-        onPageChanged: (index) {
-          setState(() {
-            _activePage = index;
-          });
-        },
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+        child: PageView(
+          controller: _pageViewController,
+          children: <Widget>[
+            TrackingView(db),
+            ScheduleView(),
+            LinksView(),
+            SettingsView()
+          ],
+          onPageChanged: (index) {
+            setState(() {
+              _selectedViewText = bottomNavItemsText[index];
+              _activePage = index;
+            });
+          },
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
           child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
             items: List<BottomNavigationBarItem>.generate(
                 4, (int i) => _createBottomNavItem(i)),
             currentIndex: _activePage,
             unselectedItemColor: Colors.black,
-            type: BottomNavigationBarType.fixed,
             selectedItemColor: Colors.amber[800],
             onTap: (index) {
               _pageViewController.animateToPage(index,
-                  duration: Duration(milliseconds: 200),
-                  curve: Curves.bounceOut);
+                  duration: Duration(milliseconds: 2), curve: Curves.ease);
               _activePage = index;
               _selectedViewText = bottomNavItemsText[index];
             },
             backgroundColor: Colors.grey[300],
           ),
-          notchMargin: 6,
           clipBehavior: Clip.antiAlias,
           shape: CircularNotchedRectangle()),
-      floatingActionButton: keyboardOpen
-          ? SizedBox()
-          : FloatingActionButton(
-              onPressed: null,
-              elevation: 2.0,
-              child: Icon(Icons.add),
-              focusElevation: 4.0,
-            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: null,
+        elevation: 2.0,
+        child: Icon(Icons.add),
+        focusElevation: 4.0,
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
