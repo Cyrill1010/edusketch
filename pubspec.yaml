@@ -29,6 +29,7 @@ dependencies:
   firebase_core: ^0.4.0+9
   firebase_auth: ^0.14.0+5
   provider:
+  flutter_colorpicker: ^0.3.4
 
 dev_dependencies:
   flutter_test:

@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
       value: AuthService().user,
       catchError: (context, error) => Error(error.toString()),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false, //TODO remove when development done
         title: 'Edusketch',
         theme: theme,
         home: Wrapper(),

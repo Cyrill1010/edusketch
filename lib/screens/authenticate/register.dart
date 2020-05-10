@@ -1,4 +1,5 @@
 import 'package:edusketch/services/auth.dart';
+import 'package:edusketch/widgets/submit_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -53,7 +54,7 @@ class _RegisterState extends State<Register> {
                   children: <Widget>[
                     SizedBox(height: 20.0),
                     TextFormField(
-                      decoration: InputDecoration(hintText: 'email'),
+                      decoration: InputDecoration(labelText: 'email'),
                       validator: (val) => val.isEmpty ? 'Enter an email' : null,
                       onChanged: (val) {
                         setState(() => email = val);
@@ -61,7 +62,7 @@ class _RegisterState extends State<Register> {
                     ),
                     SizedBox(height: 20.0),
                     TextFormField(
-                      decoration: InputDecoration(hintText: 'password'),
+                      decoration: InputDecoration(labelText: 'password'),
                       obscureText: true,
                       validator: (val) => val.length < 6
                           ? 'Enter a password 6+ chars long'
@@ -71,37 +72,22 @@ class _RegisterState extends State<Register> {
                       },
                     ),
                     SizedBox(height: 50.0),
-                    SizedBox(
-                      height: 50,
-                      width: double.infinity,
-                      child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: const BorderRadius.all(
-                              const Radius.circular(10.0),
-                            ),
-                          ),
-                          color: Colors.pink[400],
-                          child: Text(
-                            'Register',
-                            style: Theme.of(context)
-                                .textTheme
-                                .button
-                                .copyWith(color: Colors.white),
-                          ),
-                          onPressed: () async {
-                            if (_formKey.currentState.validate()) {
-                              setState(() => loading = true);
-                              dynamic result =
-                                  await _auth.registerWithEmailAndPassword(
-                                      email, password);
-                              if (result == null) {
-                                setState(() {
-                                  loading = false;
-                                  error = 'Please supply a valid email';
-                                });
-                              }
-                            }
-                          }),
+                    SubmitButton(
+                      color: Colors.pink,
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          setState(() => loading = true);
+                          dynamic result = await _auth
+                              .registerWithEmailAndPassword(email, password);
+                          if (result == null) {
+                            setState(() {
+                              loading = false;
+                              error = 'Please supply a valid email';
+                            });
+                          }
+                        }
+                      },
+                      text: 'Register',
                     ),
                     SizedBox(height: 12.0),
                     Text(

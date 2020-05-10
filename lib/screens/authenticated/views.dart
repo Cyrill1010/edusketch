@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edusketch/screens/authenticated/views/links.dart';
 import 'package:edusketch/screens/authenticated/views/schedule.dart';
 import 'package:edusketch/screens/authenticated/views/settings.dart';
-import 'package:edusketch/screens/authenticated/views/tracking.dart';
+import 'package:edusketch/screens/authenticated/views/tracking/tracking.dart';
 import 'package:flutter/material.dart';
 
 class Views extends StatefulWidget {
