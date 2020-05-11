@@ -30,6 +30,8 @@ dependencies:
   firebase_auth: ^0.14.0+5
   provider:
   flutter_colorpicker: ^0.3.4
+  flutter_iconpicker:
+  animations:
 
 dev_dependencies:
   flutter_test:
