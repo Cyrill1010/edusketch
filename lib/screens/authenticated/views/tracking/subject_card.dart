@@ -1,4 +1,6 @@
 import 'package:animations/animations.dart';
+import 'package:edusketch/screens/authenticated/views/tracking/edit_subject.dart';
+import 'package:edusketch/widgets/open_container_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -28,7 +30,9 @@ class SubjectCard extends StatelessWidget {
       //       const Radius.circular(40.0),
       //     )),
 
-      child: _OpenContainerWrapper(
+      child: OpenContainerWrapper(
+        destinationRoute: EditSubject(),
+        transitionDuration: Duration(milliseconds: 700),
         transitionType: ContainerTransitionType.fade,
         closedBuilder: (BuildContext _, VoidCallback openContainer) {
           return InkWell(
@@ -103,97 +107,6 @@ class SubjectCard extends StatelessWidget {
             ),
           );
         },
-      ),
-      // child: InkWell(
-      //   borderRadius:
-      //       BorderRadius.circular(25),
-      //   onTap: () => OpenContainer(
-      //     transitionType:
-      //         ContainerTransitionType.fade,
-      //     closedBuilder:
-      //         (BuildContext context,
-      //             void Function()
-      //                 openContainer) {
-      //       return
-      //     },
-      //     openBuilder:
-      //         (BuildContext context,
-      //             VoidCallback _) {
-      //       return
-      //     },
-      //     tappable: false,
-      //   ),
-
-      //() => Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (_) =>
-      //             EditSubject())),
-    );
-  }
-}
-
-class _OpenContainerWrapper extends StatelessWidget {
-  const _OpenContainerWrapper({
-    this.closedBuilder,
-    this.transitionType,
-  });
-
-  final OpenContainerBuilder closedBuilder;
-  final ContainerTransitionType transitionType;
-
-  @override
-  Widget build(BuildContext context) {
-    return OpenContainer(
-      transitionDuration: Duration(seconds: 3),
-      transitionType: transitionType,
-      openBuilder: (BuildContext context, VoidCallback _) {
-        return _DetailsPage();
-      },
-      tappable: false,
-      closedBuilder: closedBuilder,
-    );
-  }
-}
-
-class _DetailsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Details page')),
-      body: ListView(
-        children: <Widget>[
-          Container(
-            color: Colors.black38,
-            height: 250,
-            child: Padding(
-                padding: const EdgeInsets.all(70.0), child: Text('kjdskdklf')),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Title',
-                  style: Theme.of(context).textTheme.headline5.copyWith(
-                        color: Colors.black54,
-                        fontSize: 30.0,
-                      ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  '_loremIpsumParagraph',
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        color: Colors.black54,
-                        height: 1.5,
-                        fontSize: 16.0,
-                      ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
