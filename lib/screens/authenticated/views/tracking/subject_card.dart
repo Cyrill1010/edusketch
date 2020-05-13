@@ -18,95 +18,100 @@ class SubjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.white70, width: 1),
-        borderRadius: BorderRadius.circular(25),
-      ),
-      // Container ->   decoration: BoxDecoration(
-      //     color: subjectBackground(
-      //         subjectBackgroundGrade),
-      //     borderRadius: BorderRadius.all(
-      //       const Radius.circular(40.0),
-      //     )),
+    return Container(
+      constraints: BoxConstraints(maxHeight: 65),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.white70, width: 1),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        // Container ->   decoration: BoxDecoration(
+        //     color: subjectBackground(
+        //         subjectBackgroundGrade),
+        //     borderRadius: BorderRadius.all(
+        //       const Radius.circular(40.0),
+        //     )),
 
-      child: OpenContainerWrapper(
-        destinationRoute: EditSubject(),
-        transitionDuration: Duration(milliseconds: 700),
-        transitionType: ContainerTransitionType.fade,
-        closedBuilder: (BuildContext _, VoidCallback openContainer) {
-          return InkWell(
-            borderRadius: BorderRadius.circular(25),
-            onTap: openContainer,
-            child: ListTile(
-              leading: FaIcon(
-                FontAwesomeIcons.flask,
-                size: 30,
-              ),
-              title: Align(
-                alignment: Alignment(-1.2, 0),
-                child: Text(snapshot.data.documents[index].data['title']),
-              ),
-              trailing: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) =>
-                    Container(
-                  constraints: BoxConstraints(
-                    maxWidth: 60,
-                  ),
-                  child: Stack(
-                    children: <Widget>[
+        child: OpenContainerWrapper(
+          destinationRoute: EditSubject(),
+          transitionDuration: Duration(milliseconds: 700),
+          transitionType: ContainerTransitionType.fade,
+          closedBuilder: (BuildContext _, VoidCallback openContainer) {
+            return InkWell(
+              borderRadius: BorderRadius.circular(25),
+              onTap: openContainer,
+              child: ListTile(
+                leading: FaIcon(
+                  FontAwesomeIcons.flask,
+                  size: 30,
+                ),
+                title: Align(
+                  alignment: Alignment(-1.2, 0),
+                  child: Text(snapshot.data.documents[index].data['name']),
+                ),
+                trailing: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) =>
                       Container(
-                        constraints: BoxConstraints(
-                            minHeight: constraints.constrainHeight()),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                alignment: Alignment.centerRight,
-                                child: FaIcon(
-                                  FontAwesomeIcons.check,
-                                  size: 20,
-                                  color: Colors.green[600],
+                    constraints: BoxConstraints(
+                      maxWidth: 60,
+                    ),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          constraints: BoxConstraints(
+                              minHeight: constraints.constrainHeight()),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  child: FaIcon(
+                                    FontAwesomeIcons.check,
+                                    size: 20,
+                                    color: Colors.green[600],
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  snapshot.data.documents[index].data['average']
-                                      .toString(),
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    snapshot
+                                        .data.documents[index].data['average']
+                                        .toString(),
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
+                                  ),
                                 ),
-                              ),
-                            ]),
-                      ),
-                      Positioned(
-                        bottom: 7,
-                        right: 0,
-                        child: Text(
-                          'Weight:' +
-                              snapshot.data.documents[index].data['weight']
-                                  .toString() +
-                              '%',
-                          // style: isDarkBackground(
-                          //         subjectBackgroundGrade)
-                          //     ? Theme.of(
-                          //             context)
-                          //         .textTheme
-                          //         .subtitle2
-                          //     : Theme.of(
-                          //             context)
-                          //         .textTheme
-                          //         .subtitle2,
+                              ]),
                         ),
-                      )
-                    ],
+                        Positioned(
+                          bottom: 7,
+                          right: 0,
+                          child: Text(
+                            'Weight:' +
+                                snapshot.data.documents[index].data['weight']
+                                    .toString() +
+                                '%',
+                            // style: isDarkBackground(
+                            //         subjectBackgroundGrade)
+                            //     ? Theme.of(
+                            //             context)
+                            //         .textTheme
+                            //         .subtitle2
+                            //     : Theme.of(
+                            //             context)
+                            //         .textTheme
+                            //         .subtitle2,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -13,16 +13,17 @@ class EditSubject extends StatefulWidget {
 
 class _EditSubjectState extends State<EditSubject> {
   Color currentColor = Color(0xff443a49);
-  Widget _icon;
+  Widget _icon = Icon(Icons.ac_unit);
 
   _pickIcon() async {
     IconData icon = await FlutterIconPicker.showIconPicker(context,
-        iconPackMode: IconPack.cupertino);
-
+        iconPickerShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        searchHintText: 'Search icon...',
+        iconPackMode: IconPack.schoolIcons);
     _icon = Icon(icon);
     setState(() {});
-
-    debugPrint('Picked Icon:  $icon');
   }
 
   @override
@@ -34,10 +35,13 @@ class _EditSubjectState extends State<EditSubject> {
           onPressed: () => Navigator.pop(context),
           icon: Icon(
             Icons.navigate_before,
-            size: 35,
+            size: 40,
           ),
         ),
-        title: Text('Hio'),
+        title: Text(
+          'Edit subject',
+          style: Theme.of(context).textTheme.headline4,
+        ),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
@@ -51,15 +55,12 @@ class _EditSubjectState extends State<EditSubject> {
         child: Form(
           child: Column(children: <Widget>[
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 RaisedButton(
                   onPressed: _pickIcon,
-                  child: Text('Open IconPicker'),
+                  child: _icon,
                 ),
-                SizedBox(height: 10),
-                AnimatedSwitcher(
-                    duration: Duration(milliseconds: 300),
-                    child: _icon != null ? _icon : Container()),
                 SlideColorPicker(
                   initialColor: Colors.red,
                 ),

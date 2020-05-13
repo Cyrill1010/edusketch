@@ -41,74 +41,68 @@ class _TrackingViewState extends State<TrackingView> {
     return Column(
       children: <Widget>[
         filterBar,
+        overallOverview,
         Expanded(
-          child: ListView(
-            children: <Widget>[
-              overallOverview,
-              StreamBuilder(
-                stream: widget.db
-                    .collection('Subjects')
-                    .orderBy('order')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  return snapshot.hasData
-                      ? Container(
-                          constraints: BoxConstraints(maxHeight: 200),
-                          child: ReorderableListView(
-                              header: Text('Detailed Overview',
-                                  style: Theme.of(context).textTheme.headline5),
-                              onReorder: (int oldIndex, int newIndex) {
-                                reorderSubjects(snapshot, newIndex, oldIndex,
-                                    newIndex > oldIndex);
-                                // if (newIndex < oldIndex) {
-                                //   for (var i = newIndex; i < oldIndex; i++) {
-                                //     widget.db
-                                //         .runTransaction((myTransaction) async {
-                                //       final doc = snapshot.data.documents[i];
-                                //       await myTransaction.update(
-                                //           doc.reference, {'order': i + 1});
-                                //     });
-                                //   }
-                                //   widget.db
-                                //       .runTransaction((myTransaction) async {
-                                //     final doc =
-                                //         snapshot.data.documents[oldIndex];
-                                //     await myTransaction.update(
-                                //         doc.reference, {'order': newIndex});
-                                //   });
-                                // }
-                                // if (newIndex > oldIndex) {
-                                //   for (var i = oldIndex; i < newIndex; i++) {
-                                //     widget.db
-                                //         .runTransaction((myTransaction) async {
-                                //       final doc = snapshot.data.documents[i];
-                                //       await myTransaction.update(
-                                //           doc.reference, {'order': i - 1});
-                                //     });
-                                //   }
-                                //   widget.db
-                                //       .runTransaction((myTransaction) async {
-                                //     final doc =
-                                //         snapshot.data.documents[oldIndex];
-                                //     await myTransaction.update(
-                                //         doc.reference, {'order': newIndex});
-                                //   });
-                                // }
-                              },
-                              scrollDirection: Axis.vertical,
-                              children: List.generate(
-                                  snapshot.data.documents.length,
-                                  (index) => SubjectCard(
-                                      key: Key('$index'),
-                                      index: index,
-                                      snapshot: snapshot,
-                                      subjectBackgroundGrade:
-                                          subjectBackgroundGrade))),
-                        )
-                      : SizedBox();
-                },
-              ),
-            ],
+          child: StreamBuilder(
+            stream:
+                widget.db.collection('Subjects').orderBy('order').snapshots(),
+            builder: (context, snapshot) {
+              return snapshot.hasData
+                  ? Container(
+                      constraints: BoxConstraints(maxHeight: 200),
+                      child: ReorderableListView(
+                          header: Text('Detailed Overview',
+                              style: Theme.of(context).textTheme.headline5),
+                          onReorder: (int oldIndex, int newIndex) {
+                            reorderSubjects(snapshot, newIndex, oldIndex,
+                                newIndex > oldIndex);
+                            // if (newIndex < oldIndex) {
+                            //   for (var i = newIndex; i < oldIndex; i++) {
+                            //     widget.db
+                            //         .runTransaction((myTransaction) async {
+                            //       final doc = snapshot.data.documents[i];
+                            //       await myTransaction.update(
+                            //           doc.reference, {'order': i + 1});
+                            //     });
+                            //   }
+                            //   widget.db
+                            //       .runTransaction((myTransaction) async {
+                            //     final doc =
+                            //         snapshot.data.documents[oldIndex];
+                            //     await myTransaction.update(
+                            //         doc.reference, {'order': newIndex});
+                            //   });
+                            // }
+                            // if (newIndex > oldIndex) {
+                            //   for (var i = oldIndex; i < newIndex; i++) {
+                            //     widget.db
+                            //         .runTransaction((myTransaction) async {
+                            //       final doc = snapshot.data.documents[i];
+                            //       await myTransaction.update(
+                            //           doc.reference, {'order': i - 1});
+                            //     });
+                            //   }
+                            //   widget.db
+                            //       .runTransaction((myTransaction) async {
+                            //     final doc =
+                            //         snapshot.data.documents[oldIndex];
+                            //     await myTransaction.update(
+                            //         doc.reference, {'order': newIndex});
+                            //   });
+                            // }
+                          },
+                          scrollDirection: Axis.vertical,
+                          children: List.generate(
+                              snapshot.data.documents.length,
+                              (index) => SubjectCard(
+                                  key: Key('$index'),
+                                  index: index,
+                                  snapshot: snapshot,
+                                  subjectBackgroundGrade:
+                                      subjectBackgroundGrade))),
+                    )
+                  : SizedBox();
+            },
           ),
         )
       ],
