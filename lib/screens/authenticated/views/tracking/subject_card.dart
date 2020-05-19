@@ -33,7 +33,7 @@ class SubjectCard extends StatelessWidget {
         //     )),
 
         child: OpenContainerWrapper(
-          destinationRoute: EditSubject(),
+          destinationRoute: EditSubject(snapshot: snapshot, index: index),
           transitionDuration: Duration(milliseconds: 700),
           transitionType: ContainerTransitionType.fade,
           closedBuilder: (BuildContext _, VoidCallback openContainer) {

@@ -56,42 +56,7 @@ class _TrackingViewState extends State<TrackingView> {
                           onReorder: (int oldIndex, int newIndex) {
                             reorderSubjects(snapshot, newIndex, oldIndex,
                                 newIndex > oldIndex);
-                            // if (newIndex < oldIndex) {
-                            //   for (var i = newIndex; i < oldIndex; i++) {
-                            //     widget.db
-                            //         .runTransaction((myTransaction) async {
-                            //       final doc = snapshot.data.documents[i];
-                            //       await myTransaction.update(
-                            //           doc.reference, {'order': i + 1});
-                            //     });
-                            //   }
-                            //   widget.db
-                            //       .runTransaction((myTransaction) async {
-                            //     final doc =
-                            //         snapshot.data.documents[oldIndex];
-                            //     await myTransaction.update(
-                            //         doc.reference, {'order': newIndex});
-                            //   });
-                            // }
-                            // if (newIndex > oldIndex) {
-                            //   for (var i = oldIndex; i < newIndex; i++) {
-                            //     widget.db
-                            //         .runTransaction((myTransaction) async {
-                            //       final doc = snapshot.data.documents[i];
-                            //       await myTransaction.update(
-                            //           doc.reference, {'order': i - 1});
-                            //     });
-                            //   }
-                            //   widget.db
-                            //       .runTransaction((myTransaction) async {
-                            //     final doc =
-                            //         snapshot.data.documents[oldIndex];
-                            //     await myTransaction.update(
-                            //         doc.reference, {'order': newIndex});
-                            //   });
-                            // }
                           },
-                          scrollDirection: Axis.vertical,
                           children: List.generate(
                               snapshot.data.documents.length,
                               (index) => SubjectCard(
@@ -101,6 +66,28 @@ class _TrackingViewState extends State<TrackingView> {
                                   subjectBackgroundGrade:
                                       subjectBackgroundGrade))),
                     )
+                  //           ...List<Widget>.generate(10, (int index) {
+                  //   return OpenContainer(
+                  //     transitionType: _transitionType,
+                  //     openBuilder: (BuildContext _, VoidCallback openContainer) {
+                  //       return _DetailsPage();
+                  //     },
+                  //     tappable: false,
+                  //     closedShape: const RoundedRectangleBorder(),
+                  //     closedElevation: 0.0,
+                  //     closedBuilder: (BuildContext _, VoidCallback openContainer) {
+                  //       return ListTile(
+                  //         leading: Image.asset(
+                  //           'assets/avatar_logo.png',
+                  //           width: 40,
+                  //         ),
+                  //         onTap: openContainer,
+                  //         title: Text('List item ${index + 1}'),
+                  //         subtitle: const Text('Secondary text'),
+                  //       );
+                  //     },
+                  //   );
+                  // }),
                   : SizedBox();
             },
           ),

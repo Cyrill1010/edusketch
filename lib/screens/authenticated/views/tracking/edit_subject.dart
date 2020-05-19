@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edusketch/widgets/color_pickers.dart';
 import 'package:edusketch/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,10 @@ import 'package:flutter_iconpicker/Models/IconPack.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
 class EditSubject extends StatefulWidget {
-  EditSubject({Key key}) : super(key: key);
+  EditSubject({Key key, this.snapshot, this.index}) : super(key: key);
+  final snapshot;
+  final index;
+  final db = Firestore.instance;
 
   @override
   _EditSubjectState createState() => _EditSubjectState();
@@ -24,6 +28,14 @@ class _EditSubjectState extends State<EditSubject> {
         iconPackMode: IconPack.schoolIcons);
     _icon = Icon(icon);
     setState(() {});
+  }
+
+  void updateData(doc) async {
+    await widget.db
+        .collection('Subjects')
+        .document(doc.documentID)
+        .updateData({'name': 'please 🤫'});
+    print(widget.db);
   }
 
   @override
@@ -88,7 +100,10 @@ class _EditSubjectState extends State<EditSubject> {
               height: 20,
             ),
             SubmitButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => {
+                Navigator.pop(context),
+                updateData(widget.snapshot.data.documents[widget.index])
+              },
               text: 'Apply',
               color: Colors.pink,
             )
