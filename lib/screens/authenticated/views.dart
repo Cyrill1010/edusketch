@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edusketch/screens/authenticated/views/links.dart';
 import 'package:edusketch/screens/authenticated/views/schedule.dart';
 import 'package:edusketch/screens/authenticated/views/settings.dart';
@@ -35,7 +34,6 @@ class _ViewsState extends State<Views> {
   //   );
   // }
 
-  static final db = Firestore.instance;
   String _selectedViewText = 'Tracking';
 
   final List<String> bottomNavItemsText = <String>[
@@ -74,7 +72,7 @@ class _ViewsState extends State<Views> {
         child: PageView(
           controller: _pageViewController,
           children: <Widget>[
-            TrackingView(db),
+            TrackingView(),
             ScheduleView(),
             LinksView(),
             SettingsView()

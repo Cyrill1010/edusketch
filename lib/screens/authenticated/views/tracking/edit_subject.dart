@@ -4,20 +4,25 @@ import 'package:edusketch/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/Models/IconPack.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EditSubject extends StatefulWidget {
   EditSubject({Key key, this.snapshot, this.index}) : super(key: key);
   final snapshot;
   final index;
-  final db = Firestore.instance;
 
   @override
   _EditSubjectState createState() => _EditSubjectState();
 }
 
 class _EditSubjectState extends State<EditSubject> {
-  Color currentColor = Color(0xff443a49);
-  Widget _icon = Icon(Icons.ac_unit);
+  Widget _icon;
+  Firestore db = Firestore.instance;
+  SlideColorPicker _colorPicker;
+  final key = GlobalKey<SlideColorPickerState>();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _weightController = TextEditingController();
+  TextEditingController _goalController = TextEditingController();
 
   _pickIcon() async {
     IconData icon = await FlutterIconPicker.showIconPicker(context,
@@ -30,16 +35,51 @@ class _EditSubjectState extends State<EditSubject> {
     setState(() {});
   }
 
-  void updateData(doc) async {
-    await widget.db
-        .collection('Subjects')
-        .document(doc.documentID)
-        .updateData({'name': 'please 🤫'});
-    print(widget.db);
+  @override
+  void initState() {
+    super.initState();
+    _icon = Icon(IconDataSolid(
+        int.parse(widget.snapshot.data.documents[widget.index].data['icon'])));
+    _colorPicker = SlideColorPicker(
+      key: key,
+      initialColor: Color(int.parse(
+          widget.snapshot.data.documents[widget.index].data['color'])),
+    );
+    _nameController.text =
+        widget.snapshot.data.documents[widget.index].data['name'];
+    _weightController.text =
+        widget.snapshot.data.documents[widget.index].data['weight'].toString();
+    _goalController.text =
+        widget.snapshot.data.documents[widget.index].data['goal'].toString();
+  }
+
+  void updateData(DocumentSnapshot doc) async {
+    String iconString =
+        _icon.toString().split('(IconData(U+')[1].split(')')[0].toLowerCase();
+    await db.collection('Subjects').document(doc.documentID).updateData({
+      'icon': iconString.substring(0, 1) + 'x' + iconString.substring(1),
+      'color': key.currentState.color.toString().split('(')[1].split(')')[0],
+      'name': _nameController.text,
+      'weight': _weightController.text,
+      'goal': _goalController.text
+    });
+  }
+
+  void deleteData(DocumentSnapshot doc) async {
+    await db.collection('Subjects').document(doc.documentID).delete();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _nameController.dispose();
+    _weightController.dispose();
+    _goalController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    DocumentSnapshot doc = widget.snapshot.data.documents[widget.index];
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -57,7 +97,7 @@ class _EditSubjectState extends State<EditSubject> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => {Navigator.pop(context), deleteData(doc)},
             icon: Icon(Icons.delete),
           )
         ],
@@ -73,37 +113,35 @@ class _EditSubjectState extends State<EditSubject> {
                   onPressed: _pickIcon,
                   child: _icon,
                 ),
-                SlideColorPicker(
-                  initialColor: Colors.red,
-                ),
+                _colorPicker
               ],
             ),
             SizedBox(
               height: 20,
             ),
             TextFormField(
+              controller: _nameController,
               decoration: InputDecoration(labelText: 'Name'),
             ),
             SizedBox(
               height: 20,
             ),
             TextFormField(
+              controller: _weightController,
               decoration: InputDecoration(labelText: 'Weight'),
             ),
             SizedBox(
               height: 20,
             ),
             TextFormField(
+              controller: _goalController,
               decoration: InputDecoration(labelText: 'Goal'),
             ),
             SizedBox(
               height: 20,
             ),
             SubmitButton(
-              onPressed: () => {
-                Navigator.pop(context),
-                updateData(widget.snapshot.data.documents[widget.index])
-              },
+              onPressed: () => {Navigator.pop(context), updateData(doc)},
               text: 'Apply',
               color: Colors.pink,
             )

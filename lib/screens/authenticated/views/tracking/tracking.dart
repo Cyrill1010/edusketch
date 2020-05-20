@@ -1,23 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'subject_card.dart';
 
 class TrackingView extends StatefulWidget {
-  final db;
-  TrackingView(this.db);
+  final db = Firestore.instance;
 
   @override
   _TrackingViewState createState() => _TrackingViewState();
 }
 
 class _TrackingViewState extends State<TrackingView> {
-  Color subjectBackground(index) => Colors.redAccent[index];
-  isDarkBackground(i) {
-    return i > 400;
-  }
-
-  num subjectBackgroundGrade = 100;
-
   void reorderSubjects(snapshot, int n, int o, bool isNBiggerThanO) {
     if (isNBiggerThanO ? n > o : n < o) {
       for (var i = isNBiggerThanO ? o : n;
@@ -42,55 +35,30 @@ class _TrackingViewState extends State<TrackingView> {
       children: <Widget>[
         filterBar,
         overallOverview,
-        Expanded(
-          child: StreamBuilder(
-            stream:
-                widget.db.collection('Subjects').orderBy('order').snapshots(),
-            builder: (context, snapshot) {
-              return snapshot.hasData
-                  ? Container(
-                      constraints: BoxConstraints(maxHeight: 200),
-                      child: ReorderableListView(
-                          header: Text('Detailed Overview',
-                              style: Theme.of(context).textTheme.headline5),
-                          onReorder: (int oldIndex, int newIndex) {
-                            reorderSubjects(snapshot, newIndex, oldIndex,
-                                newIndex > oldIndex);
-                          },
-                          children: List.generate(
-                              snapshot.data.documents.length,
-                              (index) => SubjectCard(
+        StreamBuilder(
+          stream: widget.db.collection('Subjects').orderBy('order').snapshots(),
+          builder: (context, snapshot) {
+            return snapshot.hasData
+                ? Container(
+                    constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height / 2,),
+                    child: ReorderableListView(
+                        header: Text('Detailed Overview',
+                            style: Theme.of(context).textTheme.headline5),
+                        onReorder: (int oldIndex, int newIndex) {
+                          reorderSubjects(snapshot, newIndex, oldIndex,
+                              newIndex > oldIndex);
+                        },
+                        children: List.generate(
+                            snapshot.data.documents.length,
+                            (index) => SubjectCard(
                                   key: Key('$index'),
                                   index: index,
                                   snapshot: snapshot,
-                                  subjectBackgroundGrade:
-                                      subjectBackgroundGrade))),
-                    )
-                  //           ...List<Widget>.generate(10, (int index) {
-                  //   return OpenContainer(
-                  //     transitionType: _transitionType,
-                  //     openBuilder: (BuildContext _, VoidCallback openContainer) {
-                  //       return _DetailsPage();
-                  //     },
-                  //     tappable: false,
-                  //     closedShape: const RoundedRectangleBorder(),
-                  //     closedElevation: 0.0,
-                  //     closedBuilder: (BuildContext _, VoidCallback openContainer) {
-                  //       return ListTile(
-                  //         leading: Image.asset(
-                  //           'assets/avatar_logo.png',
-                  //           width: 40,
-                  //         ),
-                  //         onTap: openContainer,
-                  //         title: Text('List item ${index + 1}'),
-                  //         subtitle: const Text('Secondary text'),
-                  //       );
-                  //     },
-                  //   );
-                  // }),
-                  : SizedBox();
-            },
-          ),
+                                ))),
+                  )
+                : SizedBox();
+          },
         )
       ],
     );

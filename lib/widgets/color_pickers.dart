@@ -6,19 +6,17 @@ class SlideColorPicker extends StatefulWidget {
   final Color initialColor;
 
   @override
-  _SlideColorPickerState createState() => _SlideColorPickerState();
+  SlideColorPickerState createState() => SlideColorPickerState();
 }
 
-class _SlideColorPickerState extends State<SlideColorPicker> {
+class SlideColorPickerState extends State<SlideColorPicker> {
   @override
   void initState() {
     super.initState();
     currentColor = widget.initialColor;
   }
 
-  Color get() {
-    return currentColor;
-  }
+  Color get color => currentColor;
 
   Color currentColor;
 
