@@ -3,6 +3,7 @@ import 'package:edusketch/screens/authenticated/views/schedule.dart';
 import 'package:edusketch/screens/authenticated/views/settings.dart';
 import 'package:edusketch/screens/authenticated/views/tracking/tracking.dart';
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 class Views extends StatefulWidget {
   Views({Key key}) : super(key: key);
@@ -11,17 +12,25 @@ class Views extends StatefulWidget {
   _ViewsState createState() => _ViewsState();
 }
 
-class _ViewsState extends State<Views> {
+class _ViewsState extends State<Views> with TickerProviderStateMixin {
   bool keyboardOpen = false;
-
+  AnimationController _controller;
   final _pageViewController = PageController();
-
   int _activePage = 0;
 
   @override
   void dispose() {
     _pageViewController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
   }
 
   // @override
@@ -72,7 +81,9 @@ class _ViewsState extends State<Views> {
         child: PageView(
           controller: _pageViewController,
           children: <Widget>[
-            TrackingView(),
+            TrackingView(
+              animationController: _controller,
+            ),
             ScheduleView(),
             LinksView(),
             SettingsView()
@@ -99,15 +110,29 @@ class _ViewsState extends State<Views> {
               _activePage = index;
               _selectedViewText = bottomNavItemsText[index];
             },
-            backgroundColor: Colors.grey[300],
           ),
           clipBehavior: Clip.antiAlias,
           shape: CircularNotchedRectangle()),
       floatingActionButton: FloatingActionButton(
-        onPressed: null,
         elevation: 2.0,
-        child: Icon(Icons.add),
-        focusElevation: 4.0,
+        heroTag: null,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (BuildContext context, Widget child) {
+            return Transform(
+              transform: Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
+              alignment: FractionalOffset.center,
+              child: Icon(_controller.isDismissed ? Icons.share : Icons.close),
+            );
+          },
+        ),
+        onPressed: () {
+          if (_controller.isDismissed) {
+            _controller.forward();
+          } else {
+            _controller.reverse();
+          }
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
