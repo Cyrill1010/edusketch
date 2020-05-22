@@ -42,6 +42,7 @@ class DetailedOverview extends StatelessWidget {
                       children: List.generate(
                           snapshot.data.documents.length,
                           (index) => OpenContainer(
+                              key: Key('$index'),
                               closedColor: Colors.white,
                               closedElevation: 0.0,
                               tappable: false,

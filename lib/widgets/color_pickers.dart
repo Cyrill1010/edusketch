@@ -17,9 +17,7 @@ class SlideColorPickerState extends State<SlideColorPicker> {
   }
 
   Color get color => currentColor;
-
   Color currentColor;
-
   void changeColor(Color color) => setState(() => currentColor = color);
 
   @override

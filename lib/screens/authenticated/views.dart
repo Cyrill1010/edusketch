@@ -1,9 +1,11 @@
+import 'package:animations/animations.dart';
 import 'package:edusketch/screens/authenticated/views/links.dart';
 import 'package:edusketch/screens/authenticated/views/schedule.dart';
 import 'package:edusketch/screens/authenticated/views/settings.dart';
 import 'package:edusketch/screens/authenticated/views/tracking/tracking.dart';
+import 'package:edusketch/widgets/detailed_subject.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+import 'package:velocity_x/velocity_x.dart';
 
 class Views extends StatefulWidget {
   Views({Key key}) : super(key: key);
@@ -14,23 +16,12 @@ class Views extends StatefulWidget {
 
 class _ViewsState extends State<Views> with TickerProviderStateMixin {
   bool keyboardOpen = false;
-  AnimationController _controller;
-  final _pageViewController = PageController();
-  int _activePage = 0;
+  final _pageViewController = PageController(keepPage: true, initialPage: 0);
 
   @override
   void dispose() {
     _pageViewController.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
   }
 
   // @override
@@ -44,14 +35,7 @@ class _ViewsState extends State<Views> with TickerProviderStateMixin {
   // }
 
   String _selectedViewText = 'Tracking';
-
-  final List<String> bottomNavItemsText = <String>[
-    'Tracking',
-    'Schedule',
-    'Links',
-    'Settings'
-  ];
-
+  final List<String> bottomNavItemsText = <String>['Tracking', 'Schedule', 'Links', 'Settings'];
   final List<IconData> bottomNavItemsIcons = <IconData>[
     Icons.timeline,
     Icons.schedule,
@@ -59,11 +43,15 @@ class _ViewsState extends State<Views> with TickerProviderStateMixin {
     Icons.settings
   ];
 
-  BottomNavigationBarItem _createBottomNavItem(int i) {
-    return BottomNavigationBarItem(
-      icon: Icon(bottomNavItemsIcons[i]),
-      title: Text(bottomNavItemsText[i]),
-    );
+  IconButton bottomNavIconButton(int index, IconData i) {
+    return IconButton(
+        tooltip: bottomNavItemsText[index],
+        icon: Icon(i),
+        onPressed: () {
+          _pageViewController.animateToPage(index,
+              duration: Duration(milliseconds: 500), curve: Curves.ease);
+          _selectedViewText = bottomNavItemsText[index];
+        });
   }
 
   @override
@@ -71,8 +59,7 @@ class _ViewsState extends State<Views> with TickerProviderStateMixin {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(_selectedViewText,
-            style: Theme.of(context).textTheme.headline4),
+        title: _selectedViewText.text.textStyle(Theme.of(context).textTheme.headline4).make(),
         centerTitle: true,
         elevation: 1.0,
       ),
@@ -80,61 +67,60 @@ class _ViewsState extends State<Views> with TickerProviderStateMixin {
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
         child: PageView(
           controller: _pageViewController,
-          children: <Widget>[
-            TrackingView(
-              animationController: _controller,
-            ),
-            ScheduleView(),
-            LinksView(),
-            SettingsView()
-          ],
+          children: <Widget>[TrackingView(), ScheduleView(), LinksView(), SettingsView()],
           onPageChanged: (index) {
             setState(() {
               _selectedViewText = bottomNavItemsText[index];
-              _activePage = index;
             });
           },
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            items: List<BottomNavigationBarItem>.generate(
-                4, (int i) => _createBottomNavItem(i)),
-            currentIndex: _activePage,
-            unselectedItemColor: Colors.black,
-            selectedItemColor: Colors.amber[800],
-            onTap: (index) {
-              _pageViewController.animateToPage(index,
-                  duration: Duration(milliseconds: 2), curve: Curves.ease);
-              _activePage = index;
-              _selectedViewText = bottomNavItemsText[index];
-            },
+          child: Container(
+            height: 56,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                bottomNavIconButton(0, Icons.timeline),
+                bottomNavIconButton(1, Icons.schedule),
+                SizedBox(width: 40),
+                bottomNavIconButton(2, Icons.link),
+                bottomNavIconButton(3, Icons.settings),
+              ],
+            ),
           ),
           clipBehavior: Clip.antiAlias,
           shape: CircularNotchedRectangle()),
-      floatingActionButton: FloatingActionButton(
-        elevation: 2.0,
-        heroTag: null,
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (BuildContext context, Widget child) {
-            return Transform(
-              transform: Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
-              alignment: FractionalOffset.center,
-              child: Icon(_controller.isDismissed ? Icons.share : Icons.close),
-            );
-          },
+      floatingActionButton: OpenContainer(
+        openBuilder: (BuildContext context, VoidCallback _) {
+          return DetailedSubject(
+            createMode: true,
+          );
+        },
+        closedElevation: 6.0,
+        closedShape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(56 / 2),
+          ),
         ),
-        onPressed: () {
-          if (_controller.isDismissed) {
-            _controller.forward();
-          } else {
-            _controller.reverse();
-          }
+        closedColor: Theme.of(context).colorScheme.secondary,
+        closedBuilder: (BuildContext context, VoidCallback openContainer) {
+          return SizedBox(
+            height: 56,
+            width: 56,
+            child: Center(
+              child: Icon(
+                Icons.add,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+            ),
+          );
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
+
+// FloatingActionButton(
+//           elevation: 2.0, tooltip: 'Add Subject', onPressed: () {}, child: Icon(Icons.add)),

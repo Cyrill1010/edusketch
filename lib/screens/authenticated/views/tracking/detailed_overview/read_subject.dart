@@ -23,7 +23,7 @@ class ReadSubject extends StatelessWidget {
               IconDataSolid(int.parse(data['icon'])),
               size: 40,
             ),
-            title: data['name'].text.make(),
+            title: Text(data['name']),
             subtitle: ('Weight:' + ['weight'].toString() + '%').text.make(),
             trailing: RichText(
                 text: TextSpan(children: [
