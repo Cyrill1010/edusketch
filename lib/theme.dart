@@ -20,12 +20,9 @@ final theme = ThemeData(
     //   ),
     // ),
     scaffoldBackgroundColor: Colors.white,
-    brightness: Brightness.light,
     textTheme: TextTheme(
       headline3: TextStyle(fontSize: 40),
       subtitle1: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
-      subtitle2: TextStyle(
-          color: Colors.grey, fontSize: 8, fontWeight: FontWeight.w800),
+      subtitle2: TextStyle(color: Colors.grey[700], fontSize: 8, fontWeight: FontWeight.w800),
     ));
-final TextStyle optionStyle =
-    TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+final TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);

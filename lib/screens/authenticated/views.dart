@@ -57,7 +57,6 @@ class _ViewsState extends State<Views> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: _selectedViewText.text.textStyle(Theme.of(context).textTheme.headline4).make(),
         centerTitle: true,

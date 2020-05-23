@@ -14,16 +14,8 @@ class TrackingView extends StatefulWidget {
 class _TrackingViewState extends State<TrackingView> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Column(
-          children: <Widget>[FilterBar(), OverallOverview(), DetailedOverview()],
-        ),
-        Positioned(
-          bottom: 0,
-          child: Center(widthFactor: 5.35, child: null),
-        ),
-      ],
+    return Column(
+      children: <Widget>[FilterBar(), OverallOverview(), DetailedOverview()],
     );
   }
 }

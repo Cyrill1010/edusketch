@@ -7,10 +7,11 @@ import 'package:flutter_iconpicker/Models/IconPack.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'color_pickers.dart';
+import 'package:edusketch/globals/globals.dart' as globals;
 
 class DetailedSubject extends StatefulWidget {
-  const DetailedSubject({Key key, this.snapshot, this.index, this.createMode}) : super(key: key);
-  final AsyncSnapshot snapshot;
+  const DetailedSubject({Key key, this.doc, this.index, this.createMode}) : super(key: key);
+  final DocumentSnapshot doc;
   final int index;
   final bool createMode;
 
@@ -19,6 +20,7 @@ class DetailedSubject extends StatefulWidget {
 }
 
 class _DetailedSubjectState extends State<DetailedSubject> {
+  final _formKey = GlobalKey<FormState>();
   Widget _icon;
   Firestore db = Firestore.instance;
   SlideColorPicker _colorPicker;
@@ -43,22 +45,23 @@ class _DetailedSubjectState extends State<DetailedSubject> {
   @override
   void initState() {
     super.initState();
-    String iconString =
-        iconDataList[random.nextInt(60)].toString().split('IconData(U+')[1].split(')')[0];
+    String iconString = iconDataList[random.nextInt(iconDataList.length)]
+        .toString()
+        .split('IconData(U+')[1]
+        .split(')')[0];
     _icon = widget.createMode
         ? Icon(IconDataSolid(int.parse(iconString.substring(0, 1) + 'x' + iconString.substring(1))))
-        : Icon(IconDataSolid(int.parse(widget.snapshot.data.documents[widget.index].data['icon'])));
+        : Icon(IconDataSolid(int.parse(widget.doc.data['icon'])));
     _colorPicker = SlideColorPicker(
       key: key,
       initialColor: widget.createMode
           ? Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0)
-          : Color(int.parse(widget.snapshot.data.documents[widget.index].data['color'])),
+          : Color(int.parse(widget.doc.data['color'])),
     );
     if (!widget.createMode) {
-      _nameController.text = widget.snapshot.data.documents[widget.index].data['name'];
-      _weightController.text =
-          widget.snapshot.data.documents[widget.index].data['weight'].toString();
-      _goalController.text = widget.snapshot.data.documents[widget.index].data['goal'].toString();
+      _nameController.text = widget.doc.data['name'];
+      _weightController.text = widget.doc.data['weight'].toString();
+      _goalController.text = widget.doc.data['goal'].toString();
     }
   }
 
@@ -83,101 +86,135 @@ class _DetailedSubjectState extends State<DetailedSubject> {
 
   void deleteData(DocumentSnapshot doc) async {
     await db.collection('Subjects').document(doc.documentID).delete();
+    DocumentSnapshot snapshot = await db.collection('SubjectCount').document('count').get();
+    db
+        .collection('SubjectCount')
+        .document('count')
+        .updateData({'count': snapshot.data['count'] - 1});
   }
 
   void createData() async {
     String iconString = _icon.toString().split('IconData(U+')[1].split(')')[0].toLowerCase();
+    DocumentSnapshot snapshot = await db.collection('SubjectCount').document('count').get();
     await db.collection('Subjects').add({
-      'average': null,
+      'average': 0,
       'icon': iconString.substring(0, 1) + 'x' + iconString.substring(1),
       'color': key.currentState.color.toString().split('(')[1].split(')')[0],
       'name': _nameController.text,
       'weight': _weightController.text,
       'goal': _goalController.text,
-      'order': 0
+      'order': snapshot.data['count']
     }).catchError((e) => print(e));
+    db
+        .collection('SubjectCount')
+        .document('count')
+        .updateData({'count': snapshot.data['count'] + 1});
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(
-              Icons.navigate_before,
-              size: 40,
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(
+                Icons.navigate_before,
+                size: 40,
+              ),
             ),
-          ),
-          title: Text(
-            'Edit subject',
-            style: Theme.of(context).textTheme.headline4,
-          ),
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              onPressed: () => {
-                Navigator.pop(context),
-                widget.createMode ? null : deleteData(widget.snapshot.data.documents[widget.index])
-              },
-              icon: Icon(Icons.delete),
-            )
-          ],
-        ),
-        body: Container(
-          padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
-          child: Form(
-            child: Column(children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  RaisedButton(
-                    onPressed: _pickIcon,
-                    child: _icon,
-                  ),
-                  _colorPicker
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                controller: _weightController,
-                decoration: InputDecoration(labelText: 'Weight'),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                controller: _goalController,
-                decoration: InputDecoration(labelText: 'Goal'),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SubmitButton(
-                onPressed: () => {
-                  Navigator.pop(context),
-                  widget.createMode
-                      ? createData()
-                      : updateData(widget.snapshot.data.documents[widget.index])
-                },
-                text: widget.createMode ? 'Create' : 'Apply',
-                color: Colors.pink,
+            title: Text(
+              'Edit subject',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            centerTitle: true,
+            actions: <Widget>[
+              IconButton(
+                onPressed: () =>
+                    {Navigator.pop(context), widget.createMode ? null : deleteData(widget.doc)},
+                icon: Icon(Icons.delete),
               )
-            ]),
+            ],
           ),
-        ),
-      ),
+          body: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
+              child: Form(
+                key: _formKey,
+                child: Column(children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      RaisedButton(
+                        onPressed: _pickIcon,
+                        child: _icon,
+                      ),
+                      _colorPicker
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(labelText: 'Name'),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: _weightController,
+                    decoration: InputDecoration(labelText: 'Weight'),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      if (!globals.isPercent(int.parse(value))) {
+                        return 'Please enter a number between 0 and 100';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: _goalController,
+                    decoration: InputDecoration(labelText: 'Goal'),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      if (!globals.isGrade(int.parse(value))) {
+                        return 'Please enter a Grade';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SubmitButton(
+                    onPressed: () => {
+                      if (_formKey.currentState.validate())
+                        {
+                          Navigator.pop(context),
+                          widget.createMode ? createData() : updateData(widget.doc)
+                        }
+                    },
+                    text: widget.createMode ? 'Create' : 'Apply',
+                    color: Colors.pink,
+                  )
+                ]),
+              ),
+            ),
+          )),
     );
   }
 }
