@@ -12,7 +12,8 @@ class DetailedOverview extends StatelessWidget {
     return Container(
       constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 1.8),
       child: ReorderableFirebaseList(
-        header: Text('Detailed Overview', style: Theme.of(context).textTheme.headline5),
+        header: Text('Detailed overview',
+            style: Theme.of(context).textTheme.headline3.copyWith(color: Colors.grey)),
         collection: Firestore.instance.collection('Subjects'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {

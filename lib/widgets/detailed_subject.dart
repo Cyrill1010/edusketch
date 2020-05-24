@@ -58,9 +58,9 @@ class _DetailedSubjectState extends State<DetailedSubject> {
           ? Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0)
           : Color(int.parse(widget.doc.data['color'])),
     );
+    _weightController.text = widget.createMode ? '100' : widget.doc.data['weight'].toString();
     if (!widget.createMode) {
       _nameController.text = widget.doc.data['name'];
-      _weightController.text = widget.doc.data['weight'].toString();
       _goalController.text = widget.doc.data['goal'].toString();
     }
   }

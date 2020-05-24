@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 bool isGrade(int n) {
@@ -5,11 +6,50 @@ bool isGrade(int n) {
 }
 
 bool isPercent(int n) {
-  return 0 <= n && n <= 100;
+  return 0 <= n && n <= 1;
 }
 
 bool isGoalReached(int goal, int average) {
-  return goal >= average;
+  return average >= goal;
+}
+
+double getPlusPoints(double average) {
+  double roundedAverage = (average * 2).round() / 2;
+  return roundedAverage >= 4 ? roundedAverage - 4 : 2 * (roundedAverage - 4);
+}
+
+List<double> getAllWeights(List<DocumentSnapshot> docs) {
+  List<double> listOfWeights = <double>[];
+  docs.forEach((element) => listOfWeights.add(double.parse(element.data['weight'])));
+  return listOfWeights;
+}
+
+List<double> getAllAverages(List<DocumentSnapshot> docs) {
+  List<double> listOfAverages = <double>[];
+  docs.forEach((element) => listOfAverages.add(element.data['average'].toDouble()));
+  return listOfAverages;
+}
+
+List<double> getAllPlusPoints(List<DocumentSnapshot> docs) {
+  List<double> listOfPlusPoints = <double>[];
+  docs.forEach(
+      (element) => listOfPlusPoints.add(getPlusPoints(element.data['average'].toDouble())));
+  return listOfPlusPoints;
+}
+
+double getOverallAverage(List<double> listOfAverages, List<double> listOfWeights) {
+  List<double> listOfAveragesTimesWeights = [];
+  for (var i = 0; i < listOfAverages.length; i++) {
+    listOfAveragesTimesWeights.add(listOfAverages[i] * listOfWeights[i]);
+  }
+
+  return double.parse(
+      (listOfAveragesTimesWeights.reduce((a, b) => a + b) / listOfWeights.reduce((a, b) => a + b))
+          .toStringAsPrecision(3));
+}
+
+double getOverallPlusPoints(List<double> listOfPlusPoints) {
+  return listOfPlusPoints.reduce((a, b) => a + b);
 }
 
 bool isLightColor(int color, int limit) {
