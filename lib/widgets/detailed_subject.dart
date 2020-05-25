@@ -175,8 +175,8 @@ class _DetailedSubjectState extends State<DetailedSubject> {
                       if (value.isEmpty) {
                         return 'Please enter some text';
                       }
-                      if (!globals.isPercent(int.parse(value))) {
-                        return 'Please enter a number between 0 and 100';
+                      if (!globals.isWeight(double.parse(value))) {
+                        return 'Please enter a weight';
                       }
                       return null;
                     },

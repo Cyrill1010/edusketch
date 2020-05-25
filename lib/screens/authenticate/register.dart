@@ -1,4 +1,5 @@
 import 'package:edusketch/services/auth.dart';
+import 'package:edusketch/widgets/authenticate_input.dart';
 import 'package:edusketch/widgets/submit_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -53,20 +54,18 @@ class _RegisterState extends State<Register> {
                 child: Column(
                   children: <Widget>[
                     SizedBox(height: 20.0),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'email'),
+                    AuthenticateInput(
+                      labelText: 'email',
                       validator: (val) => val.isEmpty ? 'Enter an email' : null,
                       onChanged: (val) {
                         setState(() => email = val);
                       },
                     ),
                     SizedBox(height: 20.0),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'password'),
+                    AuthenticateInput(
+                      labelText: 'password',
                       obscureText: true,
-                      validator: (val) => val.length < 6
-                          ? 'Enter a password 6+ chars long'
-                          : null,
+                      validator: (val) => val.length < 6 ? 'Enter a password 6+ chars long' : null,
                       onChanged: (val) {
                         setState(() => password = val);
                       },
@@ -77,8 +76,8 @@ class _RegisterState extends State<Register> {
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
                           setState(() => loading = true);
-                          dynamic result = await _auth
-                              .registerWithEmailAndPassword(email, password);
+                          dynamic result =
+                              await _auth.registerWithEmailAndPassword(email, password);
                           if (result == null) {
                             setState(() {
                               loading = false;

@@ -1,4 +1,5 @@
 import 'package:edusketch/services/auth.dart';
+import 'package:edusketch/widgets/authenticate_input.dart';
 import 'package:edusketch/widgets/submit_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -54,20 +55,18 @@ class _SignInState extends State<SignIn> {
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     SizedBox(height: 20.0),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'email'),
+                    AuthenticateInput(
+                      labelText: 'email',
                       validator: (val) => val.isEmpty ? 'Enter an email' : null,
                       onChanged: (val) {
                         setState(() => email = val);
                       },
                     ),
                     SizedBox(height: 20.0),
-                    TextFormField(
+                    AuthenticateInput(
                       obscureText: true,
-                      decoration: InputDecoration(labelText: 'password'),
-                      validator: (val) => val.length < 6
-                          ? 'Enter a password 6+ chars long'
-                          : null,
+                      labelText: 'password',
+                      validator: (val) => val.length < 6 ? 'Enter a password 6+ chars long' : null,
                       onChanged: (val) {
                         setState(() => password = val);
                       },
@@ -84,13 +83,11 @@ class _SignInState extends State<SignIn> {
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
                           setState(() => loading = true);
-                          dynamic result = await _auth
-                              .signInWithEmailAndPassword(email, password);
+                          dynamic result = await _auth.signInWithEmailAndPassword(email, password);
                           if (result == null) {
                             setState(() {
                               loading = false;
-                              error =
-                                  'Could not sign in with those credentials';
+                              error = 'Could not sign in with those credentials';
                             });
                           }
                         }

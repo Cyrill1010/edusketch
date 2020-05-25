@@ -5,8 +5,8 @@ bool isGrade(int n) {
   return 1 <= n && n <= 6;
 }
 
-bool isPercent(int n) {
-  return 0 <= n && n <= 1;
+bool isWeight(double n) {
+  return 0 <= n && n <= 10;
 }
 
 bool isGoalReached(int goal, int average) {
@@ -48,8 +48,13 @@ double getOverallAverage(List<double> listOfAverages, List<double> listOfWeights
           .toStringAsPrecision(3));
 }
 
-double getOverallPlusPoints(List<double> listOfPlusPoints) {
-  return listOfPlusPoints.reduce((a, b) => a + b);
+double getOverallPlusPoints(List<double> listOfPlusPoints, List<double> listOfWeights) {
+  List<double> listOfPlusPointsTimesWeights = [];
+  for (var i = 0; i < listOfPlusPoints.length; i++) {
+    listOfPlusPointsTimesWeights.add(listOfPlusPoints[i] * listOfWeights[i]);
+  }
+
+  return listOfPlusPointsTimesWeights.reduce((a, b) => a + b);
 }
 
 bool isLightColor(int color, int limit) {

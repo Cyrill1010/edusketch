@@ -17,7 +17,7 @@ class OverallOverview extends StatelessWidget {
           stream: Firestore.instance
               .collection('Subjects')
               .where('average', isGreaterThan: 0)
-              .snapshots(),
+              .snapshots(includeMetadataChanges: true),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.hasData) {
               List<DocumentSnapshot> _docs = snapshot.data.documents;
@@ -26,7 +26,8 @@ class OverallOverview extends StatelessWidget {
                   Text('Overall average: ' +
                       getOverallAverage(getAllAverages(_docs), getAllWeights(_docs)).toString()),
                   Text('Overall plus points: ' +
-                      getOverallPlusPoints(getAllPlusPoints(_docs)).toString())
+                      getOverallPlusPoints(getAllPlusPoints(_docs), getAllWeights(_docs))
+                          .toString())
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
               );
