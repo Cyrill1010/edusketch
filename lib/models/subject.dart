@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
+
 // Grade:
 // grade: 5,
 //         topic: `Dog`,
@@ -17,6 +20,14 @@ class Subject {
   String background;
   String icon;
 
-  Subject(this.name, this.goal, this.weight, this.grades, this.average,
-      this.background, this.icon);
+  Subject(this.name, this.goal, this.weight, this.grades, this.average, this.background, this.icon);
+}
+
+class AverageAndGoalSeries {
+  final String subject;
+  final double averageOrGoal;
+  final charts.Color barColor;
+
+  AverageAndGoalSeries(
+      {@required this.subject, @required this.averageOrGoal, @required this.barColor});
 }

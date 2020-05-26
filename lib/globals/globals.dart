@@ -13,9 +13,31 @@ bool isGoalReached(int goal, int average) {
   return average >= goal;
 }
 
+String getAbbreviation(String name) {
+  return name.length > 3 ? name.substring(0, 3) : name;
+}
+
 double getPlusPoints(double average) {
   double roundedAverage = (average * 2).round() / 2;
   return roundedAverage >= 4 ? roundedAverage - 4 : 2 * (roundedAverage - 4);
+}
+
+List<String> getAllAbbreviations(List<DocumentSnapshot> docs) {
+  List<String> listOfAbbrevations = <String>[];
+  docs.forEach((element) => listOfAbbrevations.add(element.data['abbrevation']));
+  return listOfAbbrevations;
+}
+
+List<String> getAllSubjectNames(List<DocumentSnapshot> docs) {
+  List<String> listOfSubjectNames = <String>[];
+  docs.forEach((element) => listOfSubjectNames.add(element.data['name']));
+  return listOfSubjectNames;
+}
+
+List<double> getAllGoals(List<DocumentSnapshot> docs) {
+  List<double> listOfGoals = <double>[];
+  docs.forEach((element) => listOfGoals.add(double.parse(element.data['goal'])));
+  return listOfGoals;
 }
 
 List<double> getAllWeights(List<DocumentSnapshot> docs) {

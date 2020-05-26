@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:edusketch/globals/globals.dart';
 import 'package:edusketch/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/IconPicker/icons.dart';
@@ -58,7 +59,7 @@ class _DetailedSubjectState extends State<DetailedSubject> {
           ? Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0)
           : Color(int.parse(widget.doc.data['color'])),
     );
-    _weightController.text = widget.createMode ? '100' : widget.doc.data['weight'].toString();
+    _weightController.text = widget.createMode ? '1' : widget.doc.data['weight'].toString();
     if (!widget.createMode) {
       _nameController.text = widget.doc.data['name'];
       _goalController.text = widget.doc.data['goal'].toString();
@@ -76,6 +77,7 @@ class _DetailedSubjectState extends State<DetailedSubject> {
   void updateData(DocumentSnapshot doc) async {
     String iconString = _icon.toString().split('IconData(U+')[1].split(')')[0].toLowerCase();
     await db.collection('Subjects').document(doc.documentID).updateData({
+      'abbreviation': getAbbreviation(_nameController.text),
       'icon': iconString.substring(0, 1) + 'x' + iconString.substring(1),
       'color': key.currentState.color.toString().split('(')[1].split(')')[0],
       'name': _nameController.text,
@@ -97,6 +99,7 @@ class _DetailedSubjectState extends State<DetailedSubject> {
     String iconString = _icon.toString().split('IconData(U+')[1].split(')')[0].toLowerCase();
     DocumentSnapshot snapshot = await db.collection('SubjectCount').document('count').get();
     await db.collection('Subjects').add({
+      'abbreviation': getAbbreviation(_nameController.text),
       'average': 0,
       'icon': iconString.substring(0, 1) + 'x' + iconString.substring(1),
       'color': key.currentState.color.toString().split('(')[1].split(')')[0],
