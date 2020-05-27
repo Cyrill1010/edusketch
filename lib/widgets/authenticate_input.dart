@@ -29,7 +29,7 @@ class AuthenticateInput extends StatelessWidget {
               borderSide: BorderSide(color: Colors.blue, width: 2.0),
             ),
             labelText: labelText),
-        obscureText: obscureText,
+        obscureText: obscureText ?? false,
         validator: validator,
         onChanged: onChanged);
   }

@@ -13,50 +13,67 @@ bool isGoalReached(int goal, int average) {
   return average >= goal;
 }
 
-String getAbbreviation(String name) {
+String convertAbbreviation(String name) {
   return name.length > 3 ? name.substring(0, 3) : name;
 }
 
-double getPlusPoints(double average) {
+double convertPlusPoints(double average) {
   double roundedAverage = (average * 2).round() / 2;
   return roundedAverage >= 4 ? roundedAverage - 4 : 2 * (roundedAverage - 4);
 }
 
-List<String> getAllAbbreviations(List<DocumentSnapshot> docs) {
-  List<String> listOfAbbrevations = <String>[];
-  docs.forEach((element) => listOfAbbrevations.add(element.data['abbrevation']));
-  return listOfAbbrevations;
-}
-
-List<String> getAllSubjectNames(List<DocumentSnapshot> docs) {
-  List<String> listOfSubjectNames = <String>[];
-  docs.forEach((element) => listOfSubjectNames.add(element.data['name']));
-  return listOfSubjectNames;
-}
-
-List<double> getAllGoals(List<DocumentSnapshot> docs) {
-  List<double> listOfGoals = <double>[];
-  docs.forEach((element) => listOfGoals.add(double.parse(element.data['goal'])));
-  return listOfGoals;
-}
-
-List<double> getAllWeights(List<DocumentSnapshot> docs) {
-  List<double> listOfWeights = <double>[];
-  docs.forEach((element) => listOfWeights.add(double.parse(element.data['weight'])));
-  return listOfWeights;
-}
-
-List<double> getAllAverages(List<DocumentSnapshot> docs) {
-  List<double> listOfAverages = <double>[];
-  docs.forEach((element) => listOfAverages.add(element.data['average'].toDouble()));
-  return listOfAverages;
-}
-
-List<double> getAllPlusPoints(List<DocumentSnapshot> docs) {
-  List<double> listOfPlusPoints = <double>[];
+List<dynamic> getAll(List<DocumentSnapshot> docs, String whatToGet, {bool returnDouble = false}) {
+  List<dynamic> li = <dynamic>[];
   docs.forEach(
-      (element) => listOfPlusPoints.add(getPlusPoints(element.data['average'].toDouble())));
-  return listOfPlusPoints;
+      (el) => li.add(returnDouble ? double.parse(el.data[whatToGet]) : el.data[whatToGet]));
+  return li;
+}
+
+// List<String> getAllAbbreviations(List<DocumentSnapshot> docs) {
+//   List<String> listOfAbbrevations = <String>[];
+//   docs.forEach((element) => listOfAbbrevations.add(element.data['abbreviation']));
+//   return listOfAbbrevations;
+// }
+
+// List<String> getAllSubjectNames(List<DocumentSnapshot> docs) {
+//   List<String> listOfSubjectNames = <String>[];
+//   docs.forEach((element) => listOfSubjectNames.add(element.data['name']));
+//   return listOfSubjectNames;
+// }
+
+// List<double> getAllGoals(List<DocumentSnapshot> docs) {
+//   List<double> listOfGoals = <double>[];
+//   docs.forEach((element) => listOfGoals.add(double.parse(element.data['goal'])));
+//   return listOfGoals;
+// }
+
+// List<double> getAllWeights(List<DocumentSnapshot> docs) {
+//   List<double> listOfWeights = <double>[];
+//   docs.forEach((element) => listOfWeights.add(double.parse(element.data['weight'])));
+//   return listOfWeights;
+// }
+
+// List<double> getAllAverages(List<DocumentSnapshot> docs) {
+//   List<double> listOfAverages = <double>[];
+//   docs.forEach((element) => listOfAverages.add(element.data['average'].toDouble()));
+//   return listOfAverages;
+// }
+
+// List<double> getAllPlusPoints(List<DocumentSnapshot> docs) {
+//   List<double> listOfPlusPoints = <double>[];
+//   docs.forEach(
+//       (element) => listOfPlusPoints.add(getPlusPoints(element.data['average'].toDouble())));
+//   return listOfPlusPoints;
+// }
+
+dynamic calculateOverall(List<dynamic> li1, {List<dynamic> li2}) {
+  List<dynamic> resultLi = [];
+  for (var i = 0; i < li1.length; i++) {
+    resultLi.add(li1[i] * li2[i]);
+  }
+
+  return double.parse(
+      (resultLi.reduce((a, b) => a + b) / li2.reduce((a, b) => a + b)).toStringAsPrecision(3));
 }
 
 double getOverallAverage(List<double> listOfAverages, List<double> listOfWeights) {

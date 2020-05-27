@@ -77,7 +77,7 @@ class _DetailedSubjectState extends State<DetailedSubject> {
   void updateData(DocumentSnapshot doc) async {
     String iconString = _icon.toString().split('IconData(U+')[1].split(')')[0].toLowerCase();
     await db.collection('Subjects').document(doc.documentID).updateData({
-      'abbreviation': getAbbreviation(_nameController.text),
+      'abbreviation': convertAbbreviation(_nameController.text),
       'icon': iconString.substring(0, 1) + 'x' + iconString.substring(1),
       'color': key.currentState.color.toString().split('(')[1].split(')')[0],
       'name': _nameController.text,
@@ -99,8 +99,9 @@ class _DetailedSubjectState extends State<DetailedSubject> {
     String iconString = _icon.toString().split('IconData(U+')[1].split(')')[0].toLowerCase();
     DocumentSnapshot snapshot = await db.collection('SubjectCount').document('count').get();
     await db.collection('Subjects').add({
-      'abbreviation': getAbbreviation(_nameController.text),
-      'average': 0,
+      'abbreviation': convertAbbreviation(_nameController.text),
+      'average': 0.0,
+      'plusPoints': 0.0,
       'icon': iconString.substring(0, 1) + 'x' + iconString.substring(1),
       'color': key.currentState.color.toString().split('(')[1].split(')')[0],
       'name': _nameController.text,

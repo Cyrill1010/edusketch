@@ -17,6 +17,9 @@ class ReadSubject extends StatelessWidget {
         decoration: BoxDecoration(
           color: Color(int.parse(doc['color'])),
           borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(color: Colors.grey, offset: Offset(0.0, 2.0), blurRadius: 2, spreadRadius: 0),
+          ],
         ),
         child: ListTile(
             onTap: openContainer,
