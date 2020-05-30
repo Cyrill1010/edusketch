@@ -22,10 +22,11 @@ double convertPlusPoints(double average) {
   return roundedAverage >= 4 ? roundedAverage - 4 : 2 * (roundedAverage - 4);
 }
 
-List<dynamic> getAll(List<DocumentSnapshot> docs, String whatToGet, {bool returnDouble = false}) {
+List<dynamic> getAll(List<DocumentSnapshot> docs, String whatToGet, [bool returnDouble = false]) {
   List<dynamic> li = <dynamic>[];
-  docs.forEach(
-      (el) => li.add(returnDouble ? double.parse(el.data[whatToGet]) : el.data[whatToGet]));
+  docs.forEach((el) => li.add(returnDouble
+      ? double.parse(el.data[whatToGet])
+      : whatToGet == 'average' ? el.data[whatToGet].toDouble() : el.data[whatToGet]));
   return li;
 }
 
@@ -66,18 +67,8 @@ List<dynamic> getAll(List<DocumentSnapshot> docs, String whatToGet, {bool return
 //   return listOfPlusPoints;
 // }
 
-dynamic calculateOverall(List<dynamic> li1, {List<dynamic> li2}) {
-  List<dynamic> resultLi = [];
-  for (var i = 0; i < li1.length; i++) {
-    resultLi.add(li1[i] * li2[i]);
-  }
-
-  return double.parse(
-      (resultLi.reduce((a, b) => a + b) / li2.reduce((a, b) => a + b)).toStringAsPrecision(3));
-}
-
-double getOverallAverage(List<double> listOfAverages, List<double> listOfWeights) {
-  List<double> listOfAveragesTimesWeights = [];
+double getOverallAverage(List<dynamic> listOfAverages, List<dynamic> listOfWeights) {
+  List<dynamic> listOfAveragesTimesWeights = [];
   for (var i = 0; i < listOfAverages.length; i++) {
     listOfAveragesTimesWeights.add(listOfAverages[i] * listOfWeights[i]);
   }
@@ -87,8 +78,8 @@ double getOverallAverage(List<double> listOfAverages, List<double> listOfWeights
           .toStringAsPrecision(3));
 }
 
-double getOverallPlusPoints(List<double> listOfPlusPoints, List<double> listOfWeights) {
-  List<double> listOfPlusPointsTimesWeights = [];
+double getOverallPlusPoints(List<dynamic> listOfPlusPoints, List<dynamic> listOfWeights) {
+  List<dynamic> listOfPlusPointsTimesWeights = [];
   for (var i = 0; i < listOfPlusPoints.length; i++) {
     listOfPlusPointsTimesWeights.add(listOfPlusPoints[i] * listOfWeights[i]);
   }

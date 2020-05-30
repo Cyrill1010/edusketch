@@ -33,7 +33,7 @@ class ReadSubject extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6.copyWith(
                   color: isLightColor(int.parse(doc['color']), 200) ? null : Colors.white),
             ),
-            subtitle: Text('Weight:' + doc['weight'].toString() + '%',
+            subtitle: Text('Weight: ' + (double.parse(doc['weight']) * 100).toString() + '%',
                 style: Theme.of(context).textTheme.subtitle2.copyWith(
                     color: isLightColor(int.parse(doc['color']), 200) ? null : Colors.grey[300])),
             trailing: doc['average'] != 0
