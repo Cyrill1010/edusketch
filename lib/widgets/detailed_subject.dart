@@ -107,6 +107,7 @@ class _DetailedSubjectState extends State<DetailedSubject> {
       'name': _nameController.text,
       'weight': _weightController.text,
       'goal': _goalController.text,
+      'grades': <Map>[],
       'order': snapshot.data['count']
     }).catchError((e) => print(e));
     db

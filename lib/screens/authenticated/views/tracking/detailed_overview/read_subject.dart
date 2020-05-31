@@ -22,6 +22,7 @@ class ReadSubject extends StatelessWidget {
           ],
         ),
         child: ListTile(
+            isThreeLine: false,
             onTap: openContainer,
             leading: Icon(
               IconDataSolid(int.parse(doc['icon'])),
@@ -36,29 +37,34 @@ class ReadSubject extends StatelessWidget {
             subtitle: Text('Weight: ' + (double.parse(doc['weight']) * 100).toString() + '%',
                 style: Theme.of(context).textTheme.subtitle2.copyWith(
                     color: isLightColor(int.parse(doc['color']), 200) ? null : Colors.grey[300])),
-            trailing: doc['average'] != 0
-                ? RichText(
-                    text: TextSpan(children: [
-                    WidgetSpan(
-                        child: FaIcon(
-                      isGoalReached(int.parse(doc['goal']), doc['average'])
-                          ? FontAwesomeIcons.check
-                          : FontAwesomeIcons.exclamationTriangle,
-                      size: 20,
-                      color: isGoalReached(int.parse(doc['goal']), doc['average'])
-                          ? Colors.green[600]
-                          : Colors.red[600],
-                    )),
-                    TextSpan(
-                        text: doc['average'].toString(),
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: isLightColor(int.parse(doc['color']), 200)
-                                ? null
-                                : Colors.grey[300]))
-                  ]))
-                : FaIcon(
-                    FontAwesomeIcons.solidQuestionCircle,
-                    color: isLightColor(int.parse(doc['color']), 200) ? null : Colors.white,
-                  )));
+            trailing: Tooltip(
+              verticalOffset: 240,
+              preferBelow: false,
+              message: 'goal: ' + doc['goal'],
+              child: doc['average'] != 0
+                  ? RichText(
+                      text: TextSpan(children: [
+                      WidgetSpan(
+                          child: FaIcon(
+                        isGoalReached(int.parse(doc['goal']), doc['average'])
+                            ? FontAwesomeIcons.check
+                            : FontAwesomeIcons.exclamationTriangle,
+                        size: 20,
+                        color: isGoalReached(int.parse(doc['goal']), doc['average'])
+                            ? Colors.green[600]
+                            : Colors.red[600],
+                      )),
+                      TextSpan(
+                          text: doc['average'].toString(),
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: isLightColor(int.parse(doc['color']), 200)
+                                  ? null
+                                  : Colors.grey[300]))
+                    ]))
+                  : FaIcon(
+                      FontAwesomeIcons.solidQuestionCircle,
+                      color: isLightColor(int.parse(doc['color']), 200) ? null : Colors.white,
+                    ),
+            )));
   }
 }
