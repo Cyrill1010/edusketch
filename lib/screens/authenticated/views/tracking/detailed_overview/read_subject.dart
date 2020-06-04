@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ReadSubject extends StatelessWidget {
-  const ReadSubject({Key key, this.doc, this.openContainer}) : super(key: key);
+  const ReadSubject({Key key, this.doc}) : super(key: key);
   final DocumentSnapshot doc;
-  final VoidCallback openContainer;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,6 @@ class ReadSubject extends StatelessWidget {
         ),
         child: ListTile(
             isThreeLine: false,
-            onTap: openContainer,
             leading: Icon(
               IconDataSolid(int.parse(doc['icon'])),
               size: 45,

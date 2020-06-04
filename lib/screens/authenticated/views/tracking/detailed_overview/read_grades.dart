@@ -9,7 +9,6 @@ class ReadGrades extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final grades = doc['grades'];
     return Container(
         child: Container(
             margin: EdgeInsets.symmetric(
@@ -23,42 +22,45 @@ class ReadGrades extends StatelessWidget {
                     color: Colors.grey, offset: Offset(0.0, 2.0), blurRadius: 2, spreadRadius: 0),
               ],
             ),
-            child: ListView.separated(
-              itemCount: doc['doc'].length + 1,
-              itemBuilder: (BuildContext context, int index) {
-                if (index == 0) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [Text(doc['name']), Text(grades.length)],
-                  );
-                }
-                index -= 1;
-                return ListTile(
-                  isThreeLine: false,
-                  leading: Tooltip(
-                      message: 'There are notes!',
-                      child: FaIcon(
-                        FontAwesomeIcons.notesMedical,
-                        color: Colors.yellow,
-                      )),
-                  trailing: grades[index]['grade'],
-                  title: Text(grades[index]['topic']),
-                  subtitle: Row(
-                    children: <Widget>[
-                      Text('Type: ' + grades[index]['type'] + ' = ' + grades[index]['gradeWeight']),
-                      Text(grades[index]['semester'] + ', ' + grades[index]['date'])
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text(doc['name']), Text(doc['grades'].length.toString())],
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: doc['grades'].length,
+                  itemBuilder: (BuildContext context, int index) => ListTile(
+                    isThreeLine: false,
+                    leading: Tooltip(
+                        message: 'Notice the notes!',
+                        child: FaIcon(
+                          FontAwesomeIcons.notesMedical,
+                          color: Colors.yellow,
+                        )),
+                    trailing: doc['grades'][index]['grade'],
+                    title: Text(doc['grades'][index]['topic']),
+                    subtitle: Row(
+                      children: <Widget>[
+                        Text('Type: ' +
+                            doc['grades'][index]['type'] +
+                            ' = ' +
+                            doc['grades'][index]['gradeWeight']),
+                        Text(doc['grades'][index]['semester'] + ', ' + doc['grades'][index]['date'])
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                    onTap: openContainer,
                   ),
-                  onTap: openContainer,
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider(
-                  color: Colors.grey,
-                  height: 2.0,
-                );
-              },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(
+                      color: Colors.grey,
+                      height: 2.0,
+                    );
+                  },
+                ),
+              ],
             )));
   }
 }
