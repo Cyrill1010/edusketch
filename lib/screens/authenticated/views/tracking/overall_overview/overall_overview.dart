@@ -25,13 +25,12 @@ class OverallOverview extends StatefulWidget {
               .map(
                 (abbreviation) => AverageAndGoalSeries(
                   subject: abbreviation,
-                  averageOrGoal: (getAll(docs, 'goal', true)[
+                  averageOrGoal: (getAll(docs, 'goal')[
                                   getAll(docs, 'abbreviation').indexOf(abbreviation)] -
                               getAll(docs, 'average')[
                                   getAll(docs, 'abbreviation').indexOf(abbreviation)]) >=
                           0
-                      ? (getAll(docs, 'goal', true)[
-                              getAll(docs, 'abbreviation').indexOf(abbreviation)] -
+                      ? (getAll(docs, 'goal')[getAll(docs, 'abbreviation').indexOf(abbreviation)] -
                           getAll(
                               docs, 'average')[getAll(docs, 'abbreviation').indexOf(abbreviation)])
                       : null,
@@ -117,11 +116,10 @@ class _OverallOverviewState extends State<OverallOverview> {
                   Row(
                     children: [
                       Text('\u{2300}: ' +
-                          getOverallAverage(getAll(_docs, 'average'), getAll(_docs, 'weight', true))
+                          getOverallAverage(getAll(_docs, 'average'), getAll(_docs, 'weight'))
                               .toString()),
                       Text('plus points: ' +
-                          getOverallPlusPoints(
-                                  getAll(_docs, 'plusPoints'), getAll(_docs, 'weight', true))
+                          getOverallPlusPoints(getAll(_docs, 'plusPoints'), getAll(_docs, 'weight'))
                               .toString()),
                     ],
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

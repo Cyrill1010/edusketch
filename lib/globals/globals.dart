@@ -22,11 +22,10 @@ double convertPlusPoints(double average) {
   return roundedAverage >= 4 ? roundedAverage - 4 : 2 * (roundedAverage - 4);
 }
 
-List<dynamic> getAll(List<DocumentSnapshot> docs, String whatToGet, [bool returnDouble = false]) {
+List<dynamic> getAll(List<DocumentSnapshot> docs, String whatToGet) {
   List<dynamic> li = <dynamic>[];
-  docs.forEach((el) => li.add(returnDouble
-      ? double.parse(el.data[whatToGet])
-      : whatToGet == 'average' ? el.data[whatToGet].toDouble() : el.data[whatToGet]));
+  docs.forEach(
+      (el) => li.add(whatToGet == 'average' ? el.data[whatToGet].toDouble() : el.data[whatToGet]));
   return li;
 }
 

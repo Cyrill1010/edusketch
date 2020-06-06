@@ -32,23 +32,23 @@ class ReadSubject extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6.copyWith(
                   color: isLightColor(int.parse(doc['color']), 200) ? null : Colors.white),
             ),
-            subtitle: Text('Weight: ' + (double.parse(doc['weight']) * 100).toString() + '%',
+            subtitle: Text('Weight: ' + (doc['weight'] * 100).toString() + '%',
                 style: Theme.of(context).textTheme.subtitle2.copyWith(
                     color: isLightColor(int.parse(doc['color']), 200) ? null : Colors.grey[300])),
             trailing: Tooltip(
               verticalOffset: 240,
               preferBelow: false,
-              message: 'goal: ' + doc['goal'],
+              message: 'goal: ' + doc['goal'].toString(),
               child: doc['average'] != 0
                   ? RichText(
                       text: TextSpan(children: [
                       WidgetSpan(
                           child: FaIcon(
-                        isGoalReached(int.parse(doc['goal']), doc['average'])
+                        isGoalReached(doc['goal'], doc['average'])
                             ? FontAwesomeIcons.check
                             : FontAwesomeIcons.exclamationTriangle,
                         size: 20,
-                        color: isGoalReached(int.parse(doc['goal']), doc['average'])
+                        color: isGoalReached(doc['goal'], doc['average'])
                             ? Colors.green[600]
                             : Colors.red[600],
                       )),

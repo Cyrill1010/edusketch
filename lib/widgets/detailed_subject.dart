@@ -81,8 +81,8 @@ class _DetailedSubjectState extends State<DetailedSubject> {
       'icon': iconString.substring(0, 1) + 'x' + iconString.substring(1),
       'color': key.currentState.color.toString().split('(')[1].split(')')[0],
       'name': _nameController.text,
-      'weight': _weightController.text,
-      'goal': _goalController.text
+      'weight': int.parse(_weightController.text),
+      'goal': int.parse(_goalController.text)
     });
   }
 
@@ -105,8 +105,8 @@ class _DetailedSubjectState extends State<DetailedSubject> {
       'icon': iconString.substring(0, 1) + 'x' + iconString.substring(1),
       'color': key.currentState.color.toString().split('(')[1].split(')')[0],
       'name': _nameController.text,
-      'weight': _weightController.text,
-      'goal': _goalController.text,
+      'weight': int.parse(_weightController.text),
+      'goal': int.parse(_goalController.text),
       'grades': <Map>[],
       'order': snapshot.data['count']
     }).catchError((e) => print(e));

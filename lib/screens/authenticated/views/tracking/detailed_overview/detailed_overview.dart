@@ -2,9 +2,91 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edusketch/screens/authenticated/views/tracking/detailed_overview/read_grades.dart';
 import 'package:edusketch/widgets/detailed_subject.dart';
-import 'package:edusketch/widgets/reorderable_firebase_list.dart';
 import 'package:flutter/material.dart';
 import 'read_subject.dart';
+
+class DetailedOverview extends StatefulWidget {
+  DetailedOverview({Key key, this.dropdownValue}) : super(key: key);
+  final String dropdownValue;
+
+  @override
+  _DetailedOverviewState createState() => _DetailedOverviewState();
+}
+
+class _DetailedOverviewState extends State<DetailedOverview> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: StreamBuilder(
+        stream: Firestore.instance.collection('Subjects').orderBy('order').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<DocumentSnapshot> docs = snapshot.data.documents;
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                return OpenContainer(
+                    key: Key('$index'),
+                    closedColor: Colors.white,
+                    closedElevation: 0.0,
+                    openBuilder: (BuildContext context, VoidCallback _) => (() {
+                          switch (widget.dropdownValue) {
+                            case 'Subjects':
+                              return DetailedSubject(
+                                createMode: false,
+                                doc: docs[index],
+                                index: index,
+                              );
+                              break;
+                            case 'Grades':
+                              return DetailedSubject(
+                                createMode: false,
+                                doc: docs[index],
+                                index: index,
+                              );
+                              break;
+                            default:
+                              return DetailedSubject(
+                                createMode: false,
+                                doc: docs[index],
+                                index: index,
+                              );
+                          }
+                        }()),
+                    transitionDuration: Duration(milliseconds: 700),
+                    closedBuilder: (BuildContext _, VoidCallback openContainer) => (() {
+                          switch (widget.dropdownValue) {
+                            case 'Subjects':
+                              return ReadSubject(
+                                doc: docs[index],
+                              );
+                              break;
+                            case 'Grades':
+                              return ReadGrades(
+                                doc: docs[index],
+                                openContainer: openContainer,
+                              );
+                              break;
+                            default:
+                              return ReadSubject(
+                                doc: docs[index],
+                              );
+                          }
+                        }()));
+              },
+              itemCount: docs.length,
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
 
 // class DetailedOverview extends StatefulWidget {
 //   DetailedOverview({Key key}) : super(key: key);
